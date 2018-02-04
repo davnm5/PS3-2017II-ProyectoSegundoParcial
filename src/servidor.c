@@ -6,23 +6,48 @@
 int port,time_table,size_table;
 char* ruta;
 char* file_table;
-
-
-void echo(int connfd)
-{
-    size_t n;
-    char buf[MAXLINE];
-    rio_t rio;
-
-    Rio_readinitb(&rio, connfd);
-    while((n=Rio_readlineb(&rio, buf, MAXLINE)) != 0) {
-  printf("%s",buf);
-	Rio_writen(connfd,buf,n);
-    }
-}
+char buf[MAXLINE];
 
 void *thread(void *vargp);
 void leer_configuracion(char* ruta);
+char* existe(char *cadena);
+void  leer_clave();
+
+Hasht *ht;
+
+void echo(int connfd)
+{
+  char* cadenas;
+  char* msg;
+    size_t n;
+
+    rio_t rio;
+
+    Rio_readinitb(&rio, connfd);
+while((n=Rio_readlineb(&rio,buf, MAXLINE)) != 0) {
+
+
+  if(strlen(buf)-1==9){
+  cadenas= strtok(buf,"GET");
+  printf("Cadena Recibida: %s\n",cadenas);
+  if(strcmp(existe(cadenas),"EXISTE")==0){
+  strcpy(buf,"SI");
+  Rio_writen(connfd,buf,n);
+
+}
+else{
+  strcpy(buf,"NO");
+  Rio_writen(connfd,buf,n);
+}
+
+
+}
+}
+}
+
+
+
+
 
 int main(int argc, char **argv)
 {
@@ -48,6 +73,7 @@ int main(int argc, char **argv)
     printf("time_table: %d\n",time_table);
     printf("--------------------------------------------\n");
     listenfd = Open_listenfd(port);
+    ht = new_ht(size_table);
 
     while (1) {
 	connfdp = Malloc(sizeof(int));
@@ -79,7 +105,7 @@ cadenas= strtok(buffer,"=\n");
 
     if(strcmp(cadenas,"file_table")==0){
     cadenas = strtok(NULL,"=\n");
-    file_table=(char*)malloc(strlen(cadenas));
+    file_table=(char*)Malloc(strlen(cadenas));
     strcpy(file_table,cadenas);
     }
 
@@ -102,6 +128,13 @@ cadenas= strtok(buffer,"=\n");
 
 
 
+char* existe(char *cadena){
+int agregar = add_ht(ht,cadena);
+if(agregar==-1){
+return "EXISTE";
+}
+return "NO";
+}
 
 void *thread(void *vargp)
 {

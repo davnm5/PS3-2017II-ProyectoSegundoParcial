@@ -29,7 +29,6 @@ int main(int argc, char **argv)
 
 
 void enviar_mensaje(){
-
     while (Fgets(buf, MAXLINE, stdin) != NULL) {
     upper_case(buf);
     comparar();
@@ -46,12 +45,15 @@ void comparar(){
          cadenas = strtok(NULL," ");
          int size=strlen(cadenas)-1;
          if(size==6){
+           //printf("ENTRA");
           strcat(buf,cadenas);
-         	Rio_writen(clientfd, buf,strlen(buf));
+          //printf("size:%d\n",strlen(buf));
+          //printf("cadena a enviar: %s\n",buf);
+         	Rio_writen(clientfd,buf,strlen(buf));
           if(strlen(buf)-1==9){
-          printf("RESPUESTA:");
           Rio_readlineb(&rio,buf,MAXLINE);
         	Fputs(buf,stdout);
+          printf("\n");
          }
          }
          else{
