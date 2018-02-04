@@ -45,6 +45,7 @@ El servidor se encargará de aceptar múltiples conexiones simultaneas de client
 ```
 
 * Iniciar el programa cliente.
+
 El cliente debe recibir como argumentos la dirección IP y el puerto del servidor al que se conectará.
 Durante su ejecución el programa cliente aceptará por teclado lineas de comando del tipo:
 
