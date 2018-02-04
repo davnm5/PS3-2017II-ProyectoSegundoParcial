@@ -2,7 +2,7 @@ PROYECTO SEGUNDO PARCIAL
 ======================
 
 Escuela Superior Politécnica del Litoral
-Version 1.0 3/02/2017
+Version 1.0 3/02/2018
 
 1 - Descripción
 ---------------
