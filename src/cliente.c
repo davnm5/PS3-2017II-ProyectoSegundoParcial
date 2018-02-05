@@ -3,8 +3,10 @@
 void upper_case(char *s);
 void enviar_mensaje();
 void  comparar();
+void validar();
 int clientfd;
 char buf[MAXLINE];
+char* cadenas;
 rio_t rio;
 int main(int argc, char **argv)
 {
@@ -37,32 +39,47 @@ void enviar_mensaje(){
 }
 
 void comparar(){
-  char* cadenas;
+
   cadenas= strtok(buf," ");
     while(cadenas != NULL ) {
-         if(strcmp(cadenas,"GET")==0 || strcmp(cadenas,"REMOVE")==0|| strcmp(cadenas,"INSERT")==0){
-         printf("SOLICITUD : %s\n",buf);
-         cadenas = strtok(NULL," ");
-         int size=strlen(cadenas)-1;
-         if(size==6){
-           //printf("ENTRA");
-          strcat(buf,cadenas);
-          //printf("size:%d\n",strlen(buf));
-          //printf("cadena a enviar: %s\n",buf);
-         	Rio_writen(clientfd,buf,strlen(buf));
-          if(strlen(buf)-1==9){
-          Rio_readlineb(&rio,buf,MAXLINE);
-        	Fputs(buf,stdout);
-          printf("\n");
-         }
-         }
-         else{
-           printf("La palabra no contiene 6 carácteres, ingrese nuevamente: \n");
-         }
-      }
-      cadenas = strtok(NULL," ");
-    }
+
+         if(strcmp(cadenas,"GET")==0){
+        printf("SOLICITUD : %s\n",buf);
+         strcpy(cadenas,"***");
+         validar();
+       }
+       if(strcmp(cadenas,"INSERT")==0){
+      printf("SOLICITUD : %s\n",buf);
+       strcpy(cadenas,"####");
+       validar();
+     }
+     if(strcmp(cadenas,"REMOVE")==0){
+     printf("SOLICITUD : %s\n",buf);
+     strcpy(cadenas,"$$$$$");
+     validar();
+   }
+cadenas = strtok(NULL," ");
+}
+
 return 0;
+}
+
+
+void validar(){
+  cadenas = strtok(NULL," ");
+  int size=strlen(cadenas)-1;
+  if(size==6){
+   strcat(buf,cadenas);
+   Rio_writen(clientfd,buf,strlen(buf));
+   if(strlen(buf)==10){
+   Rio_readlineb(&rio,buf,MAXLINE);
+   Fputs(buf,stdout);
+   printf("\n");
+      }
+    }
+else{
+  printf("La palabra no contiene 6 carácteres, ingrese nuevamente: \n");
+}
 }
 
 

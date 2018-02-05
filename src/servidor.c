@@ -25,13 +25,11 @@ void echo(int connfd)
 
     Rio_readinitb(&rio, connfd);
 while((n=Rio_readlineb(&rio,buf, MAXLINE)) != 0) {
-
-
-  if(strlen(buf)-1==9){
-  cadenas= strtok(buf,"GET");
+  if(strlen(buf)==10){
+  cadenas= strtok(buf,"***");
   printf("Cadena Recibida: %s\n",cadenas);
   if(strcmp(existe(cadenas),"EXISTE")==0){
-  strcpy(buf,"SI");
+  strcpy(buf,"EXISTE");
   Rio_writen(connfd,buf,n);
 
 }
@@ -39,15 +37,23 @@ else{
   strcpy(buf,"NO");
   Rio_writen(connfd,buf,n);
 }
+}
 
+if(strlen(buf)==11){
+cadenas= strtok(buf,"####");
+  printf("INSERT\n");
+  add_ht(ht,cadenas);
+  print_ht(ht);
+}
 
+if(strlen(buf)==12){
+cadenas= strtok(buf,"$$$$$");
+  printf("REMOVE\n");
+  remove_ht(ht,cadenas);
+    print_ht(ht);
 }
 }
 }
-
-
-
-
 
 int main(int argc, char **argv)
 {
@@ -129,8 +135,8 @@ cadenas= strtok(buffer,"=\n");
 
 
 char* existe(char *cadena){
-int agregar = add_ht(ht,cadena);
-if(agregar==-1){
+void* aux= get_ht(ht,cadena);
+if(aux!=NULL){
 return "EXISTE";
 }
 return "NO";
