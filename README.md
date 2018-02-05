@@ -16,22 +16,13 @@ Para el funcionamiento de este programa es necesario contar con las siguientes l
 
 * Libreria Mini-XML
 
-DESCARGAMOS EL REPOSITORIO desde github
+Descargamos la libreria desde un repositorio de github
+```
 git clone https://github.com/michaelrsweet/mxml
-...
-
 cd mxml
-...
-
 ./configure
-...
+make install   //Esto agregara la libreria en los directorios lib e include, se podria usar el prefijo -lmxml para invocarla.
 
-make
-...
-make install //Esto agregara la libreria en los directorios lib e include, se podria usar el prefijo -lmxml para invocarla.
-
-...
-sudo apt-get install
 ```
 
 Para crear los ejecutables se dispone de una archivo Makefile que facilitará el trabajo.
