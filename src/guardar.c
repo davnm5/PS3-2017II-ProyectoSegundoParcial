@@ -1,6 +1,9 @@
+#include <mxml.h>
+#include <stdio.h>
+
 int guardarHash(Hasht *ht,char *dir){
 	FILE *fp;
-	mxml_node_t *mxl;
+	mxml_node_t *xml;
 	mxml_node_t *info;
 	mxml_node_t *node;
 	mxml_node_t *value;
@@ -10,10 +13,10 @@ int guardarHash(Hasht *ht,char *dir){
 	info=mxmlNewElement(xml,"info");
 	node=mxmlNewElement(info,"node");
 	mxmlNewText(node,0,ht->size);
-	value=mxmlNewElement(data,"valores");
+	value=mxmlNewElement(info,"valores");
 	for(int i=0;i<tam;i++){
 		node =mxmlNewElement(value,"valores");
-		mxmlNewText(node,0,ht->arreglo[i]);
+		mxmlNewText(node,0,ht->arreglo[i]->key);
 	}
 	fp=fopen(dir,"w");
 	mxmlSaveFile(xml,fp,MXML_NO_CALLBACK);
