@@ -12,12 +12,25 @@ Version 1.0 3/02/2018
 
 2 - Instalación
 ----------------
-Para en funcionamiento de este programa es necesario contar con las siguientes librerias:
+Para el funcionamiento de este programa es necesario contar con las siguientes librerias:
 
-* Libreria ...
+* Libreria Mini-XML
 
+DESCARGAMOS EL REPOSITORIO desde github
+git clone https://github.com/michaelrsweet/mxml
+...
 
-```
+cd mxml
+...
+
+./configure
+...
+
+make
+...
+make install //Esto agregara la libreria en los directorios lib e include, se podria usar el prefijo -lmxml para invocarla.
+
+...
 sudo apt-get install
 ```
 
