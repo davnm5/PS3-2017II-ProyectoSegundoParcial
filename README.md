@@ -21,10 +21,9 @@ Descargamos la libreria desde un repositorio de github
 git clone https://github.com/michaelrsweet/mxml
 cd mxml
 ./configure
-make install   //Esto agregara la libreria en los directorios lib e include, se podria usar el prefijo -lmxml para invocarla.
-
+make install   
 ```
-
+Esto agregara la libreria en los directorios lib e include, se podria usar el prefijo -lmxml para invocarla.
 Para crear los ejecutables se dispone de una archivo Makefile que facilitará el trabajo.
 Se encargará de crear el ejecutable del cliente y el servidor.
 
