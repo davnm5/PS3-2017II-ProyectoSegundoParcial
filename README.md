@@ -12,7 +12,7 @@ Version 1.0 3/02/2018
 
 2 - Instalación
 ----------------
-Para en funcionamiento de este programa es necesario contar con las siguientes librerias:
+Para el funcionamiento de este programa es necesario contar con las siguientes librerias:
 
 * Libreria Mini-XML
 
