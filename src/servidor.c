@@ -1,19 +1,27 @@
 
 #include "../include/csapp.h"
 #include "../include/hash.h"
+#include <signal.h>
 
-
+static Hasht *ht;
 int port,time_table,size_table;
 char* ruta;
-char* file_table;
+char file_table[20];
 char buf[MAXLINE];
-
+int c=0;
 void *thread(void *vargp);
 void leer_configuracion(char* ruta);
 char* existe(char *cadena);
 void  leer_clave();
+void manejador();
+void guardar();
 
-Hasht *ht;
+void manejador(){
+
+printf("HASH_TABLE GUARDADA\n");
+guardarHash(ht,file_table);
+
+}
 
 void echo(int connfd)
 {
@@ -27,7 +35,6 @@ void echo(int connfd)
 while((n=Rio_readlineb(&rio,buf, MAXLINE)) != 0) {
   if(strlen(buf)==10){
   cadenas= strtok(buf,"***");
-  printf("Cadena Recibida: %s\n",cadenas);
   if(strcmp(existe(cadenas),"EXISTE")==0){
   strcpy(buf,"EXISTE");
   Rio_writen(connfd,buf,n);
@@ -43,20 +50,19 @@ if(strlen(buf)==11){
 cadenas= strtok(buf,"####");
   printf("INSERT\n");
   add_ht(ht,cadenas);
-  print_ht(ht);
 }
 
 if(strlen(buf)==12){
 cadenas= strtok(buf,"$$$$$");
   printf("REMOVE\n");
   remove_ht(ht,cadenas);
-    print_ht(ht);
 }
 }
 }
 
 int main(int argc, char **argv)
 {
+    signal(SIGUSR2,manejador);
     int listenfd, *connfdp;
     socklen_t clientlen=sizeof(struct sockaddr_in);
     struct sockaddr_in clientaddr;
@@ -78,10 +84,21 @@ int main(int argc, char **argv)
     printf("size_table: %d\n",size_table);
     printf("time_table: %d\n",time_table);
     printf("--------------------------------------------\n");
-    listenfd = Open_listenfd(port);
     ht = new_ht(size_table);
 
-    while (1) {
+    char s[20]="./bin/daemon ";
+    char d[4];
+    char f[4];
+    char r[2]=" ";
+    sprintf(f,"%d",getpid());
+    sprintf(d,"%d",time_table);
+    strcat(s,f);
+    strcat(s,r);
+    strcat(s,d);
+    system(s);
+    listenfd = Open_listenfd(port);
+
+  while (1) {
 	connfdp = Malloc(sizeof(int));
 	*connfdp = Accept(listenfd, (SA *) &clientaddr, &clientlen);
 
@@ -91,7 +108,8 @@ int main(int argc, char **argv)
 	haddrp = inet_ntoa(clientaddr.sin_addr);
 	printf("Conectado con %s (%s)\n",haddrp,hp->h_name);
 	Pthread_create(&tid, NULL, thread, connfdp);
-    }
+
+}
 }
 
 
@@ -111,7 +129,6 @@ cadenas= strtok(buffer,"=\n");
 
     if(strcmp(cadenas,"file_table")==0){
     cadenas = strtok(NULL,"=\n");
-    file_table=(char*)Malloc(strlen(cadenas));
     strcpy(file_table,cadenas);
     }
 
@@ -123,6 +140,7 @@ cadenas= strtok(buffer,"=\n");
  if(strcmp(cadenas,"size_table")==0){
  cadenas = strtok(NULL,"=\n");
  size_table=atoi(cadenas);
+
 }
 
 
@@ -133,7 +151,6 @@ cadenas= strtok(buffer,"=\n");
 }
 
 
-
 char* existe(char *cadena){
 void* aux= get_ht(ht,cadena);
 if(aux!=NULL){
@@ -141,6 +158,8 @@ return "EXISTE";
 }
 return "NO";
 }
+
+
 
 void *thread(void *vargp)
 {

@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <mxml.h>
 
 #ifndef _HASHT_C
 #define _HASHT_C
 
 typedef struct reg Registro;
+int k=0;
 
 int tam;
 struct reg{
@@ -125,12 +127,41 @@ void *remove_ht(Hasht *table, char *c){
 
 void print_ht(Hasht* table){
 	if(table != NULL){
-		printf("HashTable: \n");
         	for(int i = 0; i < table->size; i++){
 			if(table->arreglo[i] != NULL)
 				printf("%s\n",table->arreglo[i]->key);
         	}
 	}
+}
+
+void guardarHash(Hasht* ht,char *c){
+		FILE *fp;
+		char * cadenas;
+		char buf[10];
+		cadenas=strtok(c,"$\r");
+		if(ht!=NULL){
+		mxml_node_t *xml;
+    mxml_node_t *data;
+    mxml_node_t *node;
+    mxml_node_t *s;
+		mxml_node_t *elements;
+    sprintf(buf, "%d",ht->size);
+   xml = mxmlNewXML("1.0");
+   data = mxmlNewElement(xml, "hash_table");
+		s= mxmlNewElement(data, "size");
+						mxmlNewText(s,0,buf);
+    elements=mxmlNewElement(data, "elements");
+		for(int i = 0; i < ht->size; i++){
+						if(ht->arreglo[i] != NULL){
+						node = mxmlNewElement(elements,"key");
+						mxmlNewText(node, 0,ht->arreglo[i]->key);
+					}
+				}
+	fp = fopen(cadenas, "w+");
+	mxmlSaveFile(xml,fp,MXML_NO_CALLBACK);
+	fclose(fp);
+
+}
 }
 
 

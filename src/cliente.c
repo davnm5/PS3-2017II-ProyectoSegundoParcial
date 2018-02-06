@@ -12,7 +12,7 @@ int main(int argc, char **argv)
 {
     int c=0;
     int puerto;
-    char *host, buf[MAXLINE],comandos[15];
+    char *host, buf[MAXLINE];
 
     if (argc != 5) {
 	fprintf(stderr, "Uso: %s -s <direccion_ip> -p <puerto>\n", argv[0]);
