@@ -92,6 +92,10 @@ NOTA: Sólo se aceptan aquellos comandos que contengan las palabras claves <GET,
 ```
 El programa cliente finaliza cuando se presiona CTRL+C, se pueden tener varios clientes conectados en simultáneo, esto no afectará el funcionamiento.
 
+```
+NOTA: Se creó una librería estática llamada libayuda.a que permite manejar ciertas funciones de mejor manera.
+```
+
 4 - Autores
 -----------
 
