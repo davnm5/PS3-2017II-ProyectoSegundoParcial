@@ -344,7 +344,6 @@ char *Fgets(char *ptr, int n, FILE *stream)
 FILE *Fopen(const char *filename, const char *mode)
 {
     FILE *fp;
-    printf("name:%s\n",filename);
     if ((fp = fopen(filename, mode)) == NULL)
 	unix_error("Fopen error");
 

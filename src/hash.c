@@ -5,10 +5,8 @@
 
 #ifndef _HASHT_C
 #define _HASHT_C
-
+int t=0;
 typedef struct reg Registro;
-int k=0;
-
 int tam;
 struct reg{
 	char *key;
@@ -41,7 +39,6 @@ Hasht *new_ht(int size){
 		return NULL;
 
 	for(int i = 0; i < size; i++){
-		//printf("%d\n",i);
 		ht->arreglo[i] = NULL;
 	}
 	ht->size = size;
@@ -135,10 +132,10 @@ void print_ht(Hasht* table){
 }
 
 void guardarHash(Hasht* ht,char *c){
+	/*
+Crea un nuevo archivo y guarda todos los elementos, se basa en recorrer la tabla hash y añadir al archivo*/
 		FILE *fp;
-		char * cadenas;
 		char buf[10];
-		cadenas=strtok(c,"$\r");
 		if(ht!=NULL){
 		mxml_node_t *xml;
     mxml_node_t *data;
@@ -157,12 +154,71 @@ void guardarHash(Hasht* ht,char *c){
 						mxmlNewText(node, 0,ht->arreglo[i]->key);
 					}
 				}
-	fp = fopen(cadenas, "w+");
+	fp = fopen(c, "w+");
 	mxmlSaveFile(xml,fp,MXML_NO_CALLBACK);
 	fclose(fp);
 
 }
 }
+
+
+Hasht *crear_hash_xml(char* archivo){
+/*Nueva función para la librería estática, crea una tabla_hash a partir del archivo XML existente
+y busca nodo a nodo y extrae aquellos valores que tengan longitud igual a 6 y los añade a la tabla hash
+*/
+
+         FILE *fp  = NULL;
+         Hasht *ht;
+         int k = 0;
+
+         mxml_node_t * tree = NULL;
+         mxml_node_t * node  = NULL;
+
+         fp = fopen (archivo, "r");
+         if (fp ){
+             tree = mxmlLoadFile (NULL , fp , MXML_OPAQUE_CALLBACK);
+         }else {
+             perror("Could Not Open the File Provided");
+             exit(1);
+         }
+         if (tree){
+                 for (node = mxmlFindElement(tree, tree,NULL,NULL, NULL,MXML_DESCEND);
+                         node != NULL;
+                         node=mxmlWalkNext (node, NULL, MXML_DESCEND)
+                 ){
+                         if (node->type  == MXML_ELEMENT) {
+                             for (k = 0; k < node->value.element.num_attrs; k++){
+                                 if (node->value.element.attrs ){
+                                     printf ("Attribute Name :: %s \n", node->value.element.attrs[k].name);
+                                     printf ("Attribute Value:: %s \n", node->value.element.attrs[k].value);
+                                 }
+
+                             }
+                         }
+
+                         else if(node->type == MXML_OPAQUE){
+													    if(t==0){
+																ht=new_ht(atoi(node->value.element.name));
+																t++;
+															}
+
+                              if(strlen(node->value.element.name)-1==6)
+                                add_ht(ht,node->value.element.name);
+                         }
+
+                 }
+         }
+         if (tree){
+            mxmlDelete(tree);
+         }
+         if (fp){
+            fclose(fp);
+         }
+return ht;
+}
+
+
+
 
 
 #endif

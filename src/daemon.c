@@ -21,7 +21,8 @@ void contador(){
 }
 
 int main(int argc, char **argv) {
-
+/*El proceso daemon,se encargará de enviar señales al servidor,
+su funcionamiento consiste en activar una alarma cada cierto tiempo*/
 	pid_t id, sesion;
   id_servidor=atoi(argv[1]);
   tiempo=atoi(argv[2]);
@@ -45,7 +46,7 @@ int main(int argc, char **argv) {
 
 
 	while (1) {
-    alarm(tiempo);
+    alarm(tiempo); //activamos la alarma cada cierto tiempo
     pause();
 	}
 	return -1;

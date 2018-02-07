@@ -31,7 +31,7 @@ int main(int argc, char **argv)
 
 
 void enviar_mensaje(){
-    while (Fgets(buf, MAXLINE, stdin) != NULL) {
+    while (Fgets(buf, MAXLINE, stdin) != NULL) {   //leemos la entrada del usuario
     upper_case(buf);
     comparar();
     }
@@ -39,7 +39,7 @@ void enviar_mensaje(){
 }
 
 void comparar(){
-
+/*Verificamos que sean comandos validos los que se ingresan*/
   cadenas= strtok(buf," ");
     while(cadenas != NULL ) {
 
@@ -61,16 +61,16 @@ void comparar(){
 cadenas = strtok(NULL," ");
 }
 
-return 0;
 }
 
-
+/*metodo que valida el tamaño de la cadena a enviar, en caso de ser incorrecto vuelve a solicitar*/
 void validar(){
   cadenas = strtok(NULL," ");
   int size=strlen(cadenas)-1;
   if(size==6){
    strcat(buf,cadenas);
    Rio_writen(clientfd,buf,strlen(buf));
+   //enviamos el comando una vez ha sido validado por completo, junto a su cadena alfanumérica
    if(strlen(buf)==10){
    Rio_readlineb(&rio,buf,MAXLINE);
    Fputs(buf,stdout);

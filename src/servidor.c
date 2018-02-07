@@ -2,26 +2,45 @@
 #include "../include/csapp.h"
 #include "../include/hash.h"
 #include <signal.h>
+#include <mxml.h>
 
 static Hasht *ht;
 int port,time_table,size_table;
 char* ruta;
 char file_table[20];
 char buf[MAXLINE];
-int c=0;
 void *thread(void *vargp);
 void leer_configuracion(char* ruta);
 char* existe(char *cadena);
 void  leer_clave();
-void manejador();
+void foreground();
+void background();
 void guardar();
 
-void manejador(){
-
-printf("HASH_TABLE GUARDADA\n");
+void guardar(){
+printf("HASH_TABLE GUARDADA\n");  //método que se activa cada cierto tiempo o cada vez que se le envie una señal correcta
 guardarHash(ht,file_table);
 
 }
+
+
+void foreground(){
+guardar(); //guardamos la tabla
+system("killall daemon"); //matamos al daemon cuando ya se presiona CTRL+C
+system("killall servidor");//matamos al servidor
+}
+
+void background(){
+char r[20]="kill -9 ";
+char f[3];
+sprintf(f,"%d",getpid());
+guardar();//guardamos la tabla
+strcat(r,f);
+system("killall daemon"); //matamos al daemon
+system(r); //enviamos la señal KILL al propio servidor
+}
+
+
 
 void echo(int connfd)
 {
@@ -33,15 +52,16 @@ void echo(int connfd)
 
     Rio_readinitb(&rio, connfd);
 while((n=Rio_readlineb(&rio,buf, MAXLINE)) != 0) {
+  /*Leemos información constantemente y comprobamos que se trate de algun comando válido*/
   if(strlen(buf)==10){
   cadenas= strtok(buf,"***");
   if(strcmp(existe(cadenas),"EXISTE")==0){
-  strcpy(buf,"EXISTE");
+  strcpy(buf,"EXISTE");    //retornamos al cliente el mensaje que existe la clave
   Rio_writen(connfd,buf,n);
 
 }
 else{
-  strcpy(buf,"NO");
+  strcpy(buf,"NO");     //retornamos NO, es decir, no existe la clave
   Rio_writen(connfd,buf,n);
 }
 }
@@ -62,7 +82,11 @@ cadenas= strtok(buf,"$$$$$");
 
 int main(int argc, char **argv)
 {
-    signal(SIGUSR2,manejador);
+
+    signal(SIGUSR2,guardar);// esta señal nos permite guardar la tabla cada cierto tiempo
+    signal(SIGINT,foreground);// señal SIGINT en modo foreground
+    signal(SIGKILL,background);//señal KILL en modo background
+
     int listenfd, *connfdp;
     socklen_t clientlen=sizeof(struct sockaddr_in);
     struct sockaddr_in clientaddr;
@@ -70,21 +94,40 @@ int main(int argc, char **argv)
     char *haddrp;
     unsigned short client_port;
     pthread_t tid;
-    if (argc != 3) {
+    if(argc==1){
+    ruta="configuracion.cfg";   //si se ejecuta como ./servidor se lee un archivo ya existente de configuracion
+    }
+
+    if (argc>1 && argc<3 || argc>3) {
 	fprintf(stderr, "Uso: %s -c <ruta_archivo>\n", argv[0]);
 	exit(0);
     }
+  if(argc==3){
+    ruta=argv[2]; //se lee la ruta proporcionada
+  }
 
-    ruta=argv[2];
-
-    leer_configuracion(ruta);
+    leer_configuracion(ruta); //método para leer el archivo de configuración
     printf("**INFORMACION DEL ARCHIVO DE CONFIGURACION**\n");
     printf("port: %d\n",port);
     printf("file_table: %s\n",file_table);
     printf("size_table: %d\n",size_table);
     printf("time_table: %d\n",time_table);
     printf("--------------------------------------------\n");
+    FILE* xml;
+    char *archivo;
+    xml=fopen(strtok(file_table,"$ \r"),"r");
+    /*leemos el archivo definido en la configuracion,
+    si no existe se crea una nueva tabla, caso contrario se usa la existente
+*/
+    if(xml==NULL){
+    printf("tabla_nueva\n");
     ht = new_ht(size_table);
+    }
+
+    if(xml!=NULL){
+    printf("tabla_existente\n");
+    ht=crear_hash_xml(file_table);// se crea una tabla hash a partir del archivo existente
+   }
 
     char s[20]="./bin/daemon ";
     char d[4];
@@ -96,6 +139,10 @@ int main(int argc, char **argv)
     strcat(s,r);
     strcat(s,d);
     system(s);
+    /*
+    Ejecutamos mediante el uso de system el daemon, que se encargará de llevar el conteo de segundos
+    y de enviar una señal al servidor, daemon recibe: el tiempo y el id del proceso.
+    */
     listenfd = Open_listenfd(port);
 
   while (1) {
@@ -117,7 +164,7 @@ void leer_configuracion(char* ruta){
 FILE *archivo;
 char buffer[100];
 char *cadenas;
-
+/*se lee el archivo de configuración linea a linea y se asignan los valores a las variables globales definidas al inicio*/
 archivo=Fopen(ruta,"r");
 while (Fgets(buffer,100,archivo)!=NULL){
 cadenas= strtok(buffer,"=\n");
@@ -150,7 +197,7 @@ cadenas= strtok(buffer,"=\n");
 }
 }
 
-
+/*funcion que devuelve si existe la clave en la tabla hash*/
 char* existe(char *cadena){
 void* aux= get_ht(ht,cadena);
 if(aux!=NULL){

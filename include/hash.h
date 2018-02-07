@@ -11,6 +11,7 @@ int add_ht(Hasht *table, char *c);
 void destroy_ht(Hasht *table);
 void *remove_ht(Hasht *table, char *c);
 void print_ht(Hasht* table);
-void guardarHash(Hasht *table,char* c);
+void guardarHash(Hasht *table,char* c); //nuevo método
+Hasht *crear_hash_xml(char* archivo); //nuevo método
 
 #endif
