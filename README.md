@@ -29,6 +29,8 @@ Se encargará de crear el ejecutable del cliente y el servidor.
 
 ```
 make servidor cliente
+Para limpiar:
+make clean
 ```
 
 3 - Modo de uso general
