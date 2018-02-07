@@ -36,7 +36,7 @@ make servidor cliente
 
 * Iniciar el programa servidor.
 
-El servidor se encargará de aceptar múltiples conexiones simultaneas de clientes, aceptará y procesará los siguientes comandos:
+El servidor se encargará de aceptar múltiples conexiones simultaneas, de clientes, aceptará y procesará los siguientes comandos:
 
 * GET <clave>: Devuelve al cliente un mensaje indicando si la clave existe o no
 * INSERT <clave>: Inserta en la tabla hash, la clave especificada
