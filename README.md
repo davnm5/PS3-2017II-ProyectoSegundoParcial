@@ -77,7 +77,7 @@ El programa cliente validará si se trata de una cadena alfanumérica de 6 carac
 Forma correcta de ejecutar:
 
 ```
-./bin/cliente -s 192.168.1.1 -p 1212
+./bin/cliente -s 127.0.0.1 -p 1212
 ```
 Ejemplo del envio de comandos al servidor:
 --------------------------------------------
