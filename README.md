@@ -24,7 +24,7 @@ make install
 sudo ldconfig
 ```
 Esto agregara la libreria en los directorios lib e include, se podria usar el prefijo -lmxml para invocarla.
-Para crear los ejecutables se dispone de una archivo Makefile que facilitará el trabajo.
+Para crear los ejecutables se dispone de un archivo Makefile que facilitará el trabajo.
 Se encargará de crear el ejecutable del cliente y el servidor.
 
 ```
@@ -46,7 +46,7 @@ El servidor se encargará de aceptar múltiples conexiones simultaneas, de clien
 
 Se proporcionan dos formas de ejecutar:
 ```
-./servidor
+./bin/servidor
 ./bin/servidor -c /ruta/archivo/configuracion.cfg
 ```
 
@@ -54,12 +54,12 @@ Además el servidor puede ser ejecutado y finalizado de las siguientes formas:
 
 * Modo Foreground:
 ```
-./servidor -->ejecutar
+./bin/servidor -->ejecutar
 presionando CTRL+C --> finalizar
 ```
 * Modo Background:
 ```
-./servidor & -->ejecutar
+./bin/servidor & -->ejecutar
 aparecerá un id del proceso eje:
 [1] 2943
 Luego ejecutando kill -KILL 2943 --> finalizar
