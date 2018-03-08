@@ -100,4 +100,3 @@ NOTA: Se creó una librería estática llamada libayuda.a que permite manejar ci
 -----------
 
 * José David Neira Martrus
-* Carlos Peñafiel
